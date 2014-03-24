@@ -1,0 +1,7 @@
+core = "7.x"
+description = "Deploy module for Discimport"
+name = "Discimport Deploy"
+package = "Discimport"
+project = "discimport_deploy"
+version = "7.x-0.1"
+
