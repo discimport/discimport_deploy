@@ -9,7 +9,7 @@
  * See http://dcycleproject.org/node/43
  */
 function discimport_deploy_install() {
-  for ($i = 7001; $i < 8000; $i++) {
+  for ($i = 7000; $i < 8000; $i++) {
     $candidate = 'discimport_deploy_update_' . $i;
     if (function_exists($candidate)) {
       $candidate();
