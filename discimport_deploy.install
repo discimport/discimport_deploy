@@ -54,5 +54,3 @@ function discimport_deploy_update_7003() {
   menu_rebuild();
   drupal_flush_all_caches();
 }
-
-// delete tops, product_display, gift certificate, shoes, storage device, drinks --> Both as product types and Content types
