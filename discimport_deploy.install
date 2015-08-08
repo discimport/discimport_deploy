@@ -61,6 +61,6 @@ function discimport_deploy_update_7003() {
 function discimport_deploy_update_7004() {
   $modules = array('commerce_sdf', 'commerce_ssr', 'commerce_ss', 'commerce_stock');
   module_disable(array('commerce_stock'));
-  drupal_uninstall(array('commerce_stock'));
+  drupal_uninstall_modules(array('commerce_stock'));
   module_enable($modules);
 }
