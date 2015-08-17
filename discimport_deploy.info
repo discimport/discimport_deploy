@@ -5,3 +5,6 @@ package = "Discimport"
 project = "discimport_deploy"
 version = "7.x-0.1"
 
+dependencies[] = discimport_discgolf
+dependencies[] = discimport_discount
+dependencies[] = discimport_add_to_cart
