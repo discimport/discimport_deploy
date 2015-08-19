@@ -9,3 +9,4 @@ dependencies[] = discimport_discgolf
 dependencies[] = discimport_discs
 dependencies[] = discimport_discount
 dependencies[] = discimport_add_to_cart
+dependencies[] = discimport_stock
