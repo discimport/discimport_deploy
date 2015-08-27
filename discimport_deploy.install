@@ -64,3 +64,25 @@ function discimport_deploy_update_7004() {
   drupal_uninstall_modules(array('commerce_stock'));
   module_enable($modules);
 }
+
+/**
+ * Fix the catalog
+ * @throws \Exception
+ */
+function discimport_deploy_update_7005() {
+  // Set up taxonomy main menu.
+  $vocabulary_machine_name = variable_get('commerce_kickstart_demo_store', FALSE) ? 'collection' : 'product_category';
+  drupal_set_message(t('Resetting taxonomy menu for @vocab', array('@vocab' => $vocabulary_machine_name)));
+  if ($collection = taxonomy_vocabulary_machine_name_load($vocabulary_machine_name)) {
+    $variable_name = _taxonomy_menu_build_variable('vocab_menu', $collection->vid);
+    variable_set($variable_name, 'main-menu');
+    $variable_name = _taxonomy_menu_build_variable('vocab_parent', $collection->vid);
+    variable_set($variable_name, '0');
+    $variable_name = _taxonomy_menu_build_variable('path', $collection->vid);
+    variable_set($variable_name, 'commerce_kickstart_taxonomy_term_path');
+    $variable_name = _taxonomy_menu_build_variable('rebuild', $collection->vid);
+    variable_set($variable_name, 1);
+    $variable_name = _taxonomy_menu_build_variable('sync', $collection->vid);
+    variable_set($variable_name, 1);
+  }
+}
