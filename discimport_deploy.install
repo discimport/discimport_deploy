@@ -18,6 +18,17 @@ function discimport_deploy_install() {
 }
 
 /**
+ * Implements hook_update_dependencies().
+ */
+function discimport_deploy_update_dependencies() {
+  $deps = array();
+  $deps['discimport_deploy'][7006] = array(
+    'commerce_coupon' => 7202,
+  );
+  return $deps;
+}
+
+/**
  * Setting up timezones.
  */
 function discimport_deploy_update_7000() {
@@ -85,4 +96,14 @@ function discimport_deploy_update_7005() {
     $variable_name = _taxonomy_menu_build_variable('sync', $collection->vid);
     variable_set($variable_name, 1);
   }
+}
+
+/**
+ * Enable Commerce GC + Commerce GC Product
+ */
+function discimport_deploy_update_7006() {
+  module_enable(array(
+    'commerce_gc',
+    'commerce_gc_product',
+  ));
 }
