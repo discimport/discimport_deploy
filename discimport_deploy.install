@@ -114,3 +114,10 @@ function discimport_deploy_update_7006() {
 function discimport_deploy_update_7007() {
   module_enable(array('features_override'));
 }
+
+/**
+ * Update weight for add to cart field.
+ */
+function discimport_deploy_update_7008() {
+  db_update('block')->fields(array('weight' => -44))->condition('delta', 'add_to_cart_table-block_1', '=')->execute();
+}
