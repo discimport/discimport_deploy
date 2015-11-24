@@ -107,3 +107,10 @@ function discimport_deploy_update_7006() {
     'commerce_gc_product',
   ));
 }
+
+/**
+ * Enable Features Override
+ */
+function discimport_deploy_update_7007() {
+  module_enable(array('features_override'));
+}
