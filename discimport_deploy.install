@@ -189,3 +189,70 @@ function discimport_deploy_update_7009() {
     }
   }
 }
+
+/**
+ * Auto generate product titles.
+ */
+function discimport_deploy_update_7010() {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'commerce_product')
+    ->propertyCondition('title', '');
+  $results = $query->execute();
+  if (!empty($results)) {
+    $products = entity_load('commerce_product', array_keys($results['commerce_product']));
+    foreach ($products as $product) {
+      // Recreate title generation.
+      $display_query = new EntityFieldQuery();
+      $display_query->entityCondition('entity_type', 'node')
+        ->fieldCondition('field_product', 'product_id', $product->product_id)->range(0, 1);
+      $display_query_results = $display_query->execute();
+      if (empty($display_query_results)) {
+        continue;
+      }
+
+      $node_stub = reset($display_query_results['node']);
+      $product->title = entity_label('node', node_load($node_stub->nid));
+      $attributes = array();
+      // Loop through all the field instances on that product type.
+      foreach (field_info_instances('commerce_product', $product->type) as $name => $instance) {
+        // A field qualifies if it is single value, required and uses a widget
+        // with a definite set of options. For the sake of simplicity, this is
+        // currently restricted to fields defined by the options module.
+        $field = field_info_field($instance['field_name']);
+
+        // Get the array of Cart settings pertaining to this instance.
+        $commerce_cart_settings = commerce_cart_field_instance_attribute_settings($instance);
+
+        // If the instance is of a field type that is eligible to function as
+        // a product attribute field and if its attribute field settings
+        // specify that this functionality is enabled...
+        if (commerce_cart_field_attribute_eligible($field) && $commerce_cart_settings['attribute_field']) {
+          $attributes[$name] = array(
+            'field' => $field,
+            'instance' => $instance,
+            'weight' => $instance['widget']['weight'],
+          );
+        }
+      }
+
+      // Sort the fields by weight.
+      uasort($attributes, 'drupal_sort_weight');
+      if (!empty($attributes)) {
+        $wrapper = entity_metadata_wrapper('commerce_product', $product);
+        $attribute_values = array();
+        foreach ($attributes as $field_name => $attribute) {
+          $attribute_label = $wrapper->{$field_name}->label();
+          if (!empty($attribute_label)) {
+            $attribute_values[] = $attribute_label;
+          }
+        }
+
+        if (!empty($attribute_values)) {
+          $product->title .= ' (' . implode(', ', $attribute_values) . ')';
+        }
+      }
+
+      entity_save('commerce_product', $product);
+    }
+  }
+}
